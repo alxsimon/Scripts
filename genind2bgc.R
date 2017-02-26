@@ -33,7 +33,12 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
     gp <- genind2genpop(gp)
     allele_count <- t(gp@tab)
     loci <- unlist(lapply(strsplit(rownames(allele_count), "\\."), "[[", 1))
-    loci <- paste0("loc_", loci[duplicated(loci)])
+    loci <- loci[duplicated(loci)]
+    if(sum(grepl("^[0-9]", loci)) > 0){
+        loci <- paste0("loc_", loci)
+        warning("At least one locus name was beginning with a number,
+  added the prefix 'loc_' to all names.")
+    }
     
     P1 <- data.frame(
         loci = loci,
@@ -68,13 +73,18 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
     allele_count <- adm$tab
     allele_count[is.na(allele_count)] <- -9
     lines <- c()
+    if(sum(grepl("^[0-9]", levels(adm@pop))) > 0){
+        levels(adm@pop) <- paste0("pop_", levels(adm@pop))
+        warning("At least one population name was beginning with a number,
+  added the prefix 'pop_' to all names.")
+    }
     r <- 1
     for(i in 0:(length(loci)-1)){
         lines[r] <- loci[i+1]
         r <- r + 1
         last_ind <- 0
         for(pop in levels(adm@pop)){
-            lines[r] <- paste0("pop_", pop)
+            lines[r] <- pop
             r <- r + 1
             first_ind <- last_ind + 1
             last_ind <- table(adm@pop)[pop] + last_ind
