@@ -18,6 +18,12 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
         }
     }
     
+    # Drop monomorphic loci in this HZ
+    loci_rm <- locNames(X)[X@loc.n.all==1]
+    X <- X[loc=which(X@loc.n.all == 2)]
+    cat("loci removed:\n")
+    cat(loci_rm, sep = "\n")
+    
     # Parental populations
     gp <- X[X@pop %in% c(groups[[1]],groups[[2]]),]
     gp@pop <- fct_collapse(gp@pop,
@@ -27,7 +33,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
     gp <- genind2genpop(gp)
     allele_count <- t(gp@tab)
     loci <- unlist(lapply(strsplit(rownames(allele_count), "\\."), "[[", 1))
-    loci <- loci[duplicated(loci)]
+    loci <- paste0("loc_", loci[duplicated(loci)])
     
     P1 <- data.frame(
         loci = loci,
@@ -50,10 +56,10 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
         lines_P2[2*i+1] <- loci[i+1]
         lines_P2[2*i+2] <- paste(P2$allele_1[i+1], P2$allele_2[i+1])
     }
-    fileConn <- file(paste0(prefix,"_P1.txt"))
+    fileConn <- file(paste0(path, prefix,"_P1.txt"))
     writeLines(lines_P1, fileConn)
     close(fileConn)
-    fileConn <- file(paste0(prefix,"_P2.txt"))
+    fileConn <- file(paste0(path, prefix,"_P2.txt"))
     writeLines(lines_P2, fileConn)
     close(fileConn)
     
@@ -68,7 +74,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
         r <- r + 1
         last_ind <- 0
         for(pop in levels(adm@pop)){
-            lines[r] <- pop
+            lines[r] <- paste0("pop_", pop)
             r <- r + 1
             first_ind <- last_ind + 1
             last_ind <- table(adm@pop)[pop] + last_ind
@@ -78,7 +84,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
             }
         }
     }
-    fileConn <- file(paste0(prefix,"_admixed.txt"))
+    fileConn <- file(paste0(path, prefix, "_admixed.txt"))
     writeLines(lines, fileConn)
     close(fileConn)
 }
