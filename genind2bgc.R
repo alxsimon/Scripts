@@ -1,6 +1,6 @@
 # inspired by this https://popgencode.wordpress.com/2015/04/17/preparing-data-file-bgc-genotype-count/
 
-genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
+genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, loci_df = F){
     # This function takes an adegenet genind object
     # to convert it to 3 bgc input files
     # requires libraries adegenet and forcats
@@ -21,7 +21,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
     # Drop monomorphic loci in this HZ
     loci_rm <- locNames(X)[X@loc.n.all==1]
     X <- X[loc=which(X@loc.n.all == 2)]
-    cat("loci removed:\n")
+    cat("Monomorphic loci removed:\n")
     cat(loci_rm, sep = "\n")
     
     # Parental populations
@@ -34,6 +34,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
     allele_count <- t(gp@tab)
     loci <- unlist(lapply(strsplit(rownames(allele_count), "\\."), "[[", 1))
     loci <- loci[duplicated(loci)]
+    loci_returned <- loci
     if(sum(grepl("^[0-9]", loci)) > 0){
         loci <- paste0("loc_", loci)
         warning("At least one locus name was beginning with a number,
@@ -70,6 +71,9 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
     
     # Admixed populations
     adm <- X[X@pop %in% groups[[3]],]
+    if(uniquePop){
+        adm@pop <- factor(x = rep("pop 0", nInd(adm)))
+    }
     allele_count <- adm$tab
     allele_count[is.na(allele_count)] <- -9
     lines <- c()
@@ -97,17 +101,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./"){
     fileConn <- file(paste0(path, prefix, "_admixed.txt"))
     writeLines(lines, fileConn)
     close(fileConn)
+    if(loci_df == T){
+        return(data.frame(locus = loci_returned, stringsAsFactors = F))
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
