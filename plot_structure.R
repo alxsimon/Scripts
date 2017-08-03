@@ -1,26 +1,7 @@
-plot_structure <- function(file, type, K, Nind, ind_names, pop,
+plot_structure <- function(clust,
                            ncut = 100, colour = NULL, 
-                           pop_order = NULL, ind_order = NULL){
-    # type: c("str", "clumpp")
-    if(type == "str"){
-        L <- readLines(file, skipNul = T, warn = F)
-        L <- L[(grep("Inferred ancestry of individuals:",L)+2):(grep("Inferred ancestry of individuals:",L)+1+Nind)]
-        L <- lapply(strsplit(L, " +"), function(x) x[x != ""])
-        clust <- as.data.frame(matrix(unlist(L), ncol = 5+K, byrow = T), stringsAsFactors = F)
-        for(j in 6:(5+K)){ clust[,j] <- as.double(clust[,j]) }
-        clust %>% select(-c(1,3,5)) %>%
-            setNames(c("id","pop", paste0("C", (1:K)))) -> clust
-        clust$id <- ind_names
-        clust$pop <- pop
-        clust <- clust[order(clust$pop),]
-    }
-    if(type == "clumpp"){
-        read.table(file, header = FALSE) %>% 
-            select(-c(2,3,5)) %>%
-            setNames(c("id","pop", paste0("C", (1:K)))) -> clust
-        clust$id <- ind_names
-        clust$pop <- pop
-    }
+                           pop_order = NULL, ind_order = NULL,
+                           angle_text = 45){
     if(!is.null(ind_order)){
         clust <- clust[order(match(clust$id, ind_order)),]
     }
@@ -30,7 +11,7 @@ plot_structure <- function(file, type, K, Nind, ind_names, pop,
     }
     theme_stru <- theme(axis.ticks.x = element_blank(),
                         axis.title = element_blank(),
-                        axis.text.x = element_text(angle = 45, hjust = 1),
+                        axis.text.x = element_text(angle = angle_text, hjust = 1),
                         plot.margin = unit(c(1, 1, 0, 2), "lines"),
                         legend.position = "none")
     p <- list()
@@ -59,4 +40,29 @@ plot_structure <- function(file, type, K, Nind, ind_names, pop,
     }
     fig <- do.call(arrangeGrob, c(p, nrow = length(p)))
     return(fig)
+}
+
+#===============================================================================
+read_clusters <- function(file, type = "clumpp", K, Nind, ind_names, pop){
+    # type: c("str", "clumpp")
+    if(type == "str"){
+        L <- readLines(file, skipNul = T, warn = F)
+        L <- L[(grep("Inferred ancestry of individuals:",L)+2):(grep("Inferred ancestry of individuals:",L)+1+Nind)]
+        L <- lapply(strsplit(L, " +"), function(x) x[x != ""])
+        clust <- as.data.frame(matrix(unlist(L), ncol = 5+K, byrow = T), stringsAsFactors = F)
+        for(j in 6:(5+K)){ clust[,j] <- as.double(clust[,j]) }
+        clust %>% select(-c(1,3,5)) %>%
+            setNames(c("id","pop", paste0("C", (1:K)))) -> clust
+        clust$id <- ind_names
+        clust$pop <- pop
+        clust <- clust[order(clust$pop),]
+    }
+    if(type == "clumpp"){
+        read.table(file, header = FALSE) %>% 
+            select(-c(2,3,5)) %>%
+            setNames(c("id","pop", paste0("C", (1:K)))) -> clust
+        clust$id <- ind_names
+        clust$pop <- pop
+    }
+    return(clust)
 }
