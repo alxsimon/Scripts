@@ -2,12 +2,15 @@ plot_structure <- function(clust,
                            ncut = 100, colour = NULL, 
                            pop_order = NULL, ind_order = NULL,
                            angle_text = 45){
-    if(!is.null(ind_order)){
+    if(!is.null(ind_order)) {
         clust <- clust[order(match(clust$id, ind_order)),]
     }
-    if(!is.null(pop_order)){
+    if(!is.null(pop_order)) {
         clust <- clust[order(match(clust$pop, pop_order)),]
         clust$pop <- factor(clust$pop, levels = pop_order)
+    }
+    if(is.null(pop_order) & is.null(ind_order)) {
+        clust <- clust[order(clust$pop),]
     }
     theme_stru <- theme(axis.ticks.x = element_blank(),
                         axis.title = element_blank(),
