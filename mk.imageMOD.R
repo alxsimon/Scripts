@@ -4,7 +4,9 @@
 mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order = NULL, 
                          hi.index = NULL, ind.touse = NULL, loci.touse = NULL, ylab.image = "Individuals", 
                          main.image = "", xlab.h = "", col.image = NULL, 
-                         pdf = TRUE, out.file = "image.pdf", pop = NULL) 
+                         pdf = TRUE, out.file = "image.pdf",
+                         pop = NULL, pop.labels = NULL,
+                         marker.colors = "black") 
 {
     default.par <- par()
     if (is.data.frame(hi.index) == TRUE) 
@@ -59,13 +61,13 @@ mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order 
               ylab = "", main = main.image, axes = FALSE)
         mtext("Markers", 1, line = 5)
         axis(2)
-        mtext(ylab.image, 2, line = 4)
+        mtext(ylab.image, 2, line = 3)
     } else {
         image(x = loci.touse, y = ind.touse, z = count.matrix[marker.order,order(pop, hi.index)],
               col = col.image, breaks = c(-0.1, 0.9, 1.9, 2.1), xlab = "",
               ylab = "", main = main.image, axes = FALSE)
         mtext("Markers", 1, line = 5)
-        axis(2, at = pos.pop, labels = levels(pop), las = 2, tck = 0)
+        axis(2, at = pos.pop, labels = pop.labels, las = 2, tck = 0)
         mtext(ylab.image, 2, line = 5)
     }
     
@@ -78,12 +80,20 @@ mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order 
     
     if (dim(loci.data)[2] == 2) {
         axis(1, at = seq(0.5, length(loci.touse) + 0.5, 1), labels = FALSE)
-        axis(1, at = loci.touse, tick = FALSE, labels = loci.data[, 
-                                                                  1][marker.order], cex.axis = 0.3, las = 2, line = 1)
+        #axis(1, at = loci.touse, tick = FALSE,
+        #     labels = loci.data[,1][marker.order], cex.axis = 0.3,
+        #     las = 2, line = 1)
+        Map(function(x,y,z) 
+            axis(1, at = x, col.axis = y, labels = z, las = 2, cex.axis = 0.3, tick = FALSE),
+            loci.touse,
+            marker.colors,
+            loci.data[,1][marker.order]
+        )
     }
     else {
-        axis(1, at = loci.touse, tick = FALSE, labels = loci.data[, 
-                                                                  1][marker.order], cex.axis = 0.3, las = 2, line = 1)
+        axis(1, at = loci.touse, tick = FALSE,
+             labels = loci.data[,1][marker.order], cex.axis = 0.3,
+             las = 2, line = 1)
         axis(1, at = c(0, cumsum(marker.n) + 0.5), labels = FALSE)
         abline(v = c(0, cumsum(marker.n) + 0.5), col = "lightgray", 
                lwd = 0.6)
