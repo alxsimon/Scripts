@@ -14,25 +14,15 @@ import_fluo <- function(file) {
     
     fluo <- list()
     #
-    fluo$stat <- as_tibble(matrix(unlist(str_split(stat, ",")), ncol = 14, byrow = T))
-    names(fluo$stat) <- as.character(fluo$stat[1,])
-    fluo$stat <- fluo$stat[-1,]
+    fluo$stat <- as_tibble(read.csv(text = paste(stat, collapse = "\n")))
     #
-    fluo$dna <- as_tibble(matrix(unlist(str_split(dna, ",")), ncol = 3, byrow = T))
-    names(fluo$dna) <- as.character(fluo$dna[1,])
-    fluo$dna <- fluo$dna[-1,]
+    fluo$dna <- as_tibble(read.csv(text = paste(dna, collapse = "\n")))
     #
-    fluo$snps <- as_tibble(matrix(unlist(str_split(snps, ",")), ncol = 5, byrow = T))
-    names(fluo$snps) <- as.character(fluo$snps[1,])
-    fluo$snps <- fluo$snps[-1,]
+    fluo$snps <- as_tibble(read.csv(text = paste(snps, collapse = "\n")))
     #
-    fluo$scaling <- as_tibble(matrix(unlist(str_split(scaling, ",")), ncol = 8, byrow = T))
-    names(fluo$scaling) <- as.character(fluo$scaling[1,])
-    fluo$scaling <- fluo$scaling[-1,]
+    fluo$scaling <- as_tibble(read.csv(text = paste(scaling, collapse = "\n")))
     #
-    fluo$data <- as_tibble(matrix(unlist(str_split(data, ",")), ncol = 13, byrow = T))
-    names(fluo$data) <- as.character(fluo$data[1,])
-    fluo$data <- fluo$data[-1,]
+    fluo$data <- as_tibble(read.csv(text = paste(data, collapse = "\n")))
     #
     fluo$header <- raw_fluo[1:(start_stat - 1)]
     
