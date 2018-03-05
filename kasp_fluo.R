@@ -14,15 +14,20 @@ import_fluo <- function(file) {
     
     fluo <- list()
     #
-    fluo$stat <- as_tibble(read.csv(text = paste(stat, collapse = "\n")))
+    fluo$stat <- as_tibble(read.csv(text = paste(stat, collapse = "\n"), 
+                                    stringsAsFactors = F))
     #
-    fluo$dna <- as_tibble(read.csv(text = paste(dna, collapse = "\n")))
+    fluo$dna <- as_tibble(read.csv(text = paste(dna, collapse = "\n"),
+                                   stringsAsFactors = F))
     #
-    fluo$snps <- as_tibble(read.csv(text = paste(snps, collapse = "\n")))
+    fluo$snps <- as_tibble(read.csv(text = paste(snps, collapse = "\n"),
+                                    stringsAsFactors = F))
     #
-    fluo$scaling <- as_tibble(read.csv(text = paste(scaling, collapse = "\n")))
+    fluo$scaling <- as_tibble(read.csv(text = paste(scaling, collapse = "\n"),
+                                       stringsAsFactors = F))
     #
-    fluo$data <- as_tibble(read.csv(text = paste(data, collapse = "\n")))
+    fluo$data <- as_tibble(read.csv(text = paste(data, collapse = "\n"),
+                                    stringsAsFactors = F))
     #
     fluo$header <- raw_fluo[1:(start_stat - 1)]
     
