@@ -40,19 +40,19 @@ def unique(seq):
 def get_alleles(column_id, dataframe):
     genotypes = list(dataframe[column_id].values)
     alleles = unique([item for sublist in [x.split('/') for x in genotypes] for item in sublist])
-    alleles.remove('NA')
+    alleles = [a for a in alleles if a != 'NA']
     return alleles
 
 
 #===============
 
 df = pd.read_csv(args.infile)
-df.rename(columns={'Unnamed: 0': 'id'}, inplace=True)
+#df.rename(columns={'Unnamed: 0': 'id'}, inplace=True)
 df = df.fillna('NA')
 
 #
-names = list(df["id"].values)
-populations = list(df["pop"].values)
+names = df.iloc[:,0].tolist()
+populations = df.iloc[:,1].tolist()
 markers = list(df.columns.values[2:])
 
 uniqPop = unique(populations)
