@@ -19,11 +19,14 @@ import csv
 
 parser = argparse.ArgumentParser(description='Transform csv file in nucleotide genotype format to a structure input file.')
 parser.add_argument('infile', help='CSV file containing individuals index in 1st column, population id in 2nd column and genotypes after. 1st row is marker ids.')
-parser.add_argument('outdir', help='output directory')
+parser.add_argument('--outfile', help='output directory')
 parser.add_argument('--recodepop', help='recode populations or not (default 1)', type=int, default=1)
 args = parser.parse_args()
 
-outfile = args.outdir + args.infile[args.infile.rfind('/'):].replace('.csv', '.stru')
+if args.outfile is None:
+    outfile = args.infile.replace('.csv', '.stru')
+else:
+    outfile = args.outfile
 outpop = outfile.replace('.stru', '.pop')
 
 with open(args.infile, newline='') as f:
@@ -89,4 +92,4 @@ if args.recodepop == 1:
             csvwriter.writerow([pop, index + 1])
 
 #============================
-print(args.infile[args.infile.rfind('/'):], 'converted to', outfile[outfile.rfind('/'):])
+print(args.infile, 'converted to', outfile)
