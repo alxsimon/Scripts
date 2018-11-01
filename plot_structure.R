@@ -1,4 +1,5 @@
 require(reshape2)
+require(gridExtra)
 
 plot_structure <- function(clust,
                            ncut = 100, colour = NULL, 
