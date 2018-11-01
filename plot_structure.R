@@ -1,3 +1,5 @@
+require(reshape2)
+
 plot_structure <- function(clust,
                            ncut = 100, colour = NULL, 
                            pop_order = NULL, ind_order = NULL,
