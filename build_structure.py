@@ -19,8 +19,11 @@ import csv
 
 parser = argparse.ArgumentParser(description='Transform csv file in nucleotide genotype format to a structure input file.')
 parser.add_argument('infile', help='CSV file containing individuals index in 1st column, population id in 2nd column and genotypes after. 1st row is marker ids.')
-parser.add_argument('--outfile', help='output directory')
-parser.add_argument('--recodepop', help='recode populations or not (default 1)', type=int, default=1)
+parser.add_argument('--outfile', help='Output directory')
+parser.add_argument('--recodepop', help='Recode populations or not (default 1)', type=int, default=1)
+parser.add_argument('--pfrompopflagonly', help='Define the PFROMPOPFLAGONLY parameter in Structure', type=int, default=0)
+parser.add_argument('--burnin', help='Define the BURNIN parameter in Structure', type=int, default=20000)
+parser.add_argument('--numreps', help='Define the NUMREPS parameter in Structure', type=int, default=80000)
 args = parser.parse_args()
 
 if args.outfile is None:
@@ -48,6 +51,9 @@ else:
 names = [row[0].replace(' ','_') for row in data[1:]]
 populations = [row[1] for row in data[1:]]
 genotypes = [row[startMarkers:] for row in data[1:]]
+
+Ngen = len(names)
+Nloc = len(genotypes[1])
 
 #==================================
 # Transform populations to numeric
@@ -90,6 +96,106 @@ if args.recodepop == 1:
         csvwriter = csv.writer(popFile, delimiter='\t')
         for index, pop in enumerate(uniqPop):
             csvwriter.writerow([pop, index + 1])
+
+#============================
+# Parameter files
+#============================
+
+mainparNames = [
+    "NUMINDS",
+    "NUMLOCI",
+    "LABEL",
+    "POPDATA", 
+    "POPFLAG", 
+    "LOCDATA", 
+    "PHENOTYPE", 
+    "MARKERNAMES", 
+    "MAPDISTANCES", 
+    "ONEROWPERIND", 
+    "PHASEINFO",
+    "PHASED",
+    "RECESSIVEALLELES", 
+    "EXTRACOLS",
+    "MISSING",
+    "PLOIDY",
+    "BURNIN",
+    "NUMREPS"
+]
+
+mainparValues = [
+    Ngen,
+    Nloc,
+    1,
+    1, 
+    1, 
+    0, 
+    0,
+    1, 
+    0, 
+    0, 
+    0, 
+    0, 
+    0, 
+    0,
+    -9,
+    2,
+    args.burnin,
+    args.numreps
+]
+
+extraparNames = [
+    "NOADMIX",
+    "LINKAGE",
+    "USEPOPINFO",
+    "LOCPRIOR",
+    "INFERALPHA",
+    "ALPHA",
+    "POPALPHAS",
+    "UNIFPRIORALPHA",
+    "ALPHAMAX",
+    "ALPHAPROPSD",
+    "FREQSCORR",
+    "LAMBDA",
+    "COMPUTEPROB",
+    "PFROMPOPFLAGONLY",
+    "ANCESTDIST",
+    "STARTATPOPINFO",
+    "METROFREQ",
+    "UPDATEFREQ",
+    "RANDOMIZE"
+]
+
+extraparValues = [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0.3,
+    1,
+    1,
+    10.0,
+    0.05,
+    0,
+    1.0,
+    1,
+    args.pfrompopflagonly,
+    0,
+    0,
+    10,
+    1,
+    0
+]
+
+with open(outfile.replace(".stru", "_mainparams"), 'w', newline='') as out:
+    csvwriter = csv.writer(out, delimiter=' ')
+    for i in range(len(mainparNames)):
+        csvwriter.writerow(["#define", mainparNames[i], mainparValues[i]])
+
+with open(outfile.replace(".stru", "_extraparams"), 'w', newline='') as out:
+    csvwriter = csv.writer(out, delimiter=' ')
+    for i in range(len(extraparNames)):
+        csvwriter.writerow(["#define", extraparNames[i], extraparValues[i]])
 
 #============================
 print(args.infile, 'converted to', outfile)
