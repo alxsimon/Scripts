@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser(description='Transform csv file in nucleotide g
 parser.add_argument('infile', help='CSV file containing individuals index in 1st column, population id in 2nd column and genotypes after. 1st row is marker ids.')
 parser.add_argument('--outfile', help='Output directory')
 parser.add_argument('--recodepop', help='Recode populations or not (default 1)', type=int, default=1)
-parser.add_argument('--usepopinfo', help='Define the USEPOPINFO parameter in Structure', type=int, default=0)
+parser.add_argument('--locprior', help='Define the LOCPRIOR parameter in Structure', type=int, default=0)
 parser.add_argument('--pfrompopflagonly', help='Define the PFROMPOPFLAGONLY parameter in Structure', type=int, default=0)
 parser.add_argument('--burnin', help='Define the BURNIN parameter in Structure', type=int, default=20000)
 parser.add_argument('--numreps', help='Define the NUMREPS parameter in Structure', type=int, default=80000)
@@ -149,6 +149,7 @@ extraparNames = [
     "LINKAGE",
     "USEPOPINFO",
     "LOCPRIOR",
+    "LOCISPOP",
     "INFERALPHA",
     "ALPHA",
     "POPALPHAS",
@@ -169,8 +170,9 @@ extraparNames = [
 extraparValues = [
     0,
     0,
-    args.usepopinfo,
     0,
+    args.locprior,
+    1,
     1,
     0.3,
     1,
