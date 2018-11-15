@@ -2,7 +2,8 @@
 require(adegenet)
 require(forcats)
 
-genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, loci_used = F){
+genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, loci_used = F,
+                       int.as.admix = F, admix.grps = NULL){
   # This function takes an adegenet genind object
   # to convert it to 3 bgc input files
   # requires libraries adegenet and forcats
@@ -67,22 +68,26 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
     lines_P2[2*i+1] <- loci[i+1]
     lines_P2[2*i+2] <- paste(P2$allele_1[i+1], P2$allele_2[i+1])
   }
-  fileConn <- file(paste0(path, prefix,"_P1.txt"))
+  fileConn <- file(paste0(path, "/", prefix,"_P1.txt"))
   writeLines(lines_P1, fileConn)
   close(fileConn)
-  fileConn <- file(paste0(path, prefix,"_P2.txt"))
+  fileConn <- file(paste0(path, "/", prefix,"_P2.txt"))
   writeLines(lines_P2, fileConn)
   close(fileConn)
   
   # Admixed populations
   adm <- X[X@pop %in% groups[[2]], ]
-  if(uniquePop){
+  if (uniquePop) {
     adm@pop <- factor(x = rep("pop 0", nInd(adm)))
+  } 
+  if (int.as.admix & !uniquePop) {
+    arg_list <- c(list(adm@pop), admix.grps)
+    adm@pop <- do.call(fct_collapse, arg_list)
   }
   allele_count <- adm$tab
   allele_count[is.na(allele_count)] <- -9
   lines <- c()
-  if(sum(grepl("^[0-9]", levels(adm@pop))) > 0){
+  if (sum(grepl("^[0-9]", levels(adm@pop))) > 0){
     levels(adm@pop) <- paste0("pop_", levels(adm@pop))
     warning("At least one population name was beginning with a number,
   added the prefix 'pop_' to all names.")
@@ -103,7 +108,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
       }
     }
   }
-  fileConn <- file(paste0(path, prefix, "_admixed.txt"))
+  fileConn <- file(paste0(path, "/", prefix, "_admixed.txt"))
   writeLines(lines, fileConn)
   close(fileConn)
   if(loci_used == T){
