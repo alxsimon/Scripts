@@ -6,7 +6,7 @@ mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order 
                          main.image = "", xlab.h = "", col.image = NULL, 
                          pdf = TRUE, out.file = "image.pdf",
                          pop = NULL, pop.labels = NULL,
-                         marker.colors = "black") 
+                         marker.colors = "black", by.hi = F) 
 {
     default.par <- par()
     if (is.data.frame(hi.index) == TRUE) 
@@ -50,20 +50,33 @@ mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order 
         }
         marker.order <- tmp
     }
+    
+    if (by.hi){
+      ind.order = order(pop, hi.index)
+    } else if (!is.null(pop)) {
+      ind.order = order(pop)
+    } else {
+      ind.order = 1:length(hi.index)
+    }
+    
     pos.abl <- head(cumsum(summary(pop)), n = -1) + 0.5
     pos.pop <- cumsum(summary(pop)) - summary(pop)/2
+    
+    if (is.null(pop.labels) & !is.null(pop)){
+      pop.labels <- levels(pop)
+    }
     
     nf <- layout(matrix(c(1, 2), 1, 2, byrow = TRUE), c(6, 1), c(1, 1), respect = FALSE)
     par(mar = c(7, 6, 1, 1))
     if (is.null(pop)){
-        image(x = loci.touse, y = ind.touse, z = count.matrix[marker.order,ind.touse],
+        image(x = loci.touse, y = ind.touse, z = count.matrix[marker.order, ind.touse],
               col = col.image, breaks = c(-0.1, 0.9, 1.9, 2.1), xlab = "",
               ylab = "", main = main.image, axes = FALSE)
         mtext("Markers", 1, line = 5)
         axis(2)
         mtext(ylab.image, 2, line = 3)
     } else {
-        image(x = loci.touse, y = ind.touse, z = count.matrix[marker.order,order(pop)],
+        image(x = loci.touse, y = ind.touse, z = count.matrix[marker.order, ind.order],
               col = col.image, breaks = c(-0.1, 0.9, 1.9, 2.1), xlab = "",
               ylab = "", main = main.image, axes = FALSE)
         mtext("Markers", 1, line = 5)
@@ -104,12 +117,12 @@ mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order 
     box()
     par(mar = c(7, 0, 1, 1))
     n.inds <- length(ind.touse)
-    plot(hi.index[order(pop)], 1:n.inds, axes = FALSE, xlab = "",
+    plot(hi.index[ind.order], 1:n.inds, axes = FALSE, xlab = "",
          ylab = "", ylim = c(1 + 0.0355 * n.inds, n.inds - 0.0355 * n.inds), cex = 0.6, type = "n", xlim = 0:1)
     mtext("Proportion", 1, line = 3, cex = 0.6)
     mtext(xlab.h, 1, line = 4, cex = 0.6)
     abline(v = 0.5, col = "lightgray")
-    lines(hi.index[order(pop)], 1:n.inds)
+    lines(hi.index[ind.order], 1:n.inds)
     axis(1, at = c(0, 0.5, 1), cex.axis = 0.6)
     box()
     if (pdf == TRUE) {
