@@ -12,14 +12,14 @@ fi
 echo $ZIPFILE
 
 cd /Applications/CLUMPAK
-pwd
 
+ID=${RANDOM}
 if [ $TYPE = 'admixture' ]; then
-	perl CLUMPAK.pl --id 1 --dir ${WD}/tmp --file ${ZIPFILE} --inputtype ${TYPE} --podtopop ${POPFILE}
+	perl CLUMPAK.pl --id ${ID} --dir ${WD}/tmp --file ${ZIPFILE} --inputtype ${TYPE} --podtopop ${POPFILE}
 else
-	perl CLUMPAK.pl --id 1 --dir ${WD}/tmp --file ${ZIPFILE} --inputtype ${TYPE}
+	perl CLUMPAK.pl --id ${ID} --dir ${WD}/tmp --file ${ZIPFILE} --inputtype ${TYPE}
 fi
 
 unzip ${WD}/tmp/1.zip -d ${WD}/
-mv ${WD}/1 ${WD}/Clumpak
+mv ${WD}/${ID} ${WD}/Clumpak
 rm -r ${WD}/tmp
