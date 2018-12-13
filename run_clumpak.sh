@@ -20,6 +20,6 @@ else
 	perl CLUMPAK.pl --id ${ID} --dir ${WD}/tmp --file ${ZIPFILE} --inputtype ${TYPE}
 fi
 
-unzip ${WD}/tmp/1.zip -d ${WD}/
+unzip ${WD}/tmp/${ID}.zip -d ${WD}/
 mv ${WD}/${ID} ${WD}/Clumpak
 rm -r ${WD}/tmp
