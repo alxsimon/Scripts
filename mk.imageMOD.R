@@ -7,7 +7,8 @@ mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order 
 												 pdf = TRUE, out.file = "image.pdf",
 												 pop = NULL, pop.labels = NULL,
 												 marker.colors = "black", by.hi = F,
-												 vabline = NULL) 
+												 vabline = NULL,
+												 pdf.height = 9.5, pdf.width = 10) 
 {
 	default.par <- par()
 	if (is.data.frame(hi.index) == TRUE) 
@@ -23,7 +24,7 @@ mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order 
 		count.matrix <- introgress.data[[2]]
 	else count.matrix <- introgress.data
 	if (pdf == TRUE) {
-		pdf(file = out.file, height = 9.5, width = 10)
+		pdf(file = out.file, height = pdf.height, width = pdf.width)
 	}
 	if (dim(loci.data)[2] > 2) {
 		lg <- sort(unique(as.numeric(loci.data[, 3])))
@@ -66,8 +67,8 @@ mk.imageMOD <- function (introgress.data = NULL, loci.data = NULL, marker.order 
 		ind.order = 1:length(hi.index)
 	}
 	
-	pos.abl <- head(cumsum(summary(pop)), n = -1) + 0.5
-	pos.pop <- cumsum(summary(pop)) - summary(pop)/2
+	pos.abl <- head(cumsum(table(pop)), n = -1) + 0.5
+	pos.pop <- cumsum(table(pop)) - table(pop)/2
 	
 	if (is.null(pop.labels) & !is.null(pop)){
 		pop.labels <- levels(pop)

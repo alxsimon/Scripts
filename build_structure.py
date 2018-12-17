@@ -25,6 +25,7 @@ parser.add_argument('--locprior', help='Define the LOCPRIOR parameter in Structu
 parser.add_argument('--pfrompopflagonly', help='Define the PFROMPOPFLAGONLY parameter in Structure', type=int, default=0)
 parser.add_argument('--burnin', help='Define the BURNIN parameter in Structure', type=int, default=20000)
 parser.add_argument('--numreps', help='Define the NUMREPS parameter in Structure', type=int, default=80000)
+parser.add_argument('--genmap', help='genetic map csv with columns "locus, lg, pos.cM"')
 args = parser.parse_args()
 
 if args.outfile is None:
@@ -36,6 +37,12 @@ outpop = outfile.replace('.stru', '.pop')
 with open(args.infile, newline='') as f:
     csvreader = csv.reader(f)
     data = [row for row in csvreader]
+
+if args.genmap is not None:
+    with open(args.genmap, newline='') as g:
+        csvreader = csv.reader(g)
+        genmap = [row for row in csvreader]
+    mapdist = [row[2] for row in genmap[1:]]
 
 def unique(seq):
     # Order preserving
@@ -89,6 +96,8 @@ for gen in genotypes:
 with open(outfile, 'w', newline='') as out:
     csvwriter = csv.writer(out, delimiter='\t')
     csvwriter.writerow(data[0][startMarkers:])
+    if args.genmap is not None:
+        csvwriter.writerow(mapdist)
     for i in range(len(genotypes)):
         csvwriter.writerow([names[i], newPop[i], popflag[i]] + newGenotypes[i][0])
         csvwriter.writerow([names[i], newPop[i], popflag[i]] + newGenotypes[i][1])
@@ -101,6 +110,13 @@ if args.recodepop == 1:
 #============================
 # Parameter files
 #============================
+
+if args.genmap is None:
+    withmapdist = 0
+    linkage = 0
+else:
+    withmapdist = 1
+    linkage = 1
 
 mainparNames = [
     "NUMINDS",
@@ -132,7 +148,7 @@ mainparValues = [
     0, 
     0,
     1, 
-    0, 
+    withmapdist, 
     0, 
     0, 
     0, 
@@ -169,7 +185,7 @@ extraparNames = [
 
 extraparValues = [
     0,
-    0,
+    linkage,
     0,
     args.locprior,
     1,
@@ -189,6 +205,10 @@ extraparValues = [
     1,
     0
 ]
+
+if args.genmap is not None:
+    extraparNames.extend(["RLOG10START", "RLOG10MIN", "RLOG10MAX", "RPROPSD"])
+    extraparValues.extend([-2, -4, 2, 0.1])
 
 with open(outfile.replace(".stru", "_mainparams"), 'w', newline='') as out:
     csvwriter = csv.writer(out, delimiter=' ')
