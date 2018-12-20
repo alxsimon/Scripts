@@ -207,8 +207,8 @@ extraparValues = [
 ]
 
 if args.genmap is not None:
-    extraparNames.extend(["RLOG10START", "RLOG10MIN", "RLOG10MAX", "RLOG10PROPSD", "ADMBURNIN"])
-    extraparValues.extend([-2, -4, 2, 0.1, int(args.burnin*0.5)])
+    extraparNames.extend(["LOG10RSTART", "LOG10RMIN", "LOG10RMAX", "LOG10RPROPSD", "ADMBURNIN"])
+    extraparValues.extend([-2, -3, 2, 0.1, int(args.burnin*0.5)])
 
 with open(outfile.replace(".stru", "_mainparams"), 'w', newline='') as out:
     csvwriter = csv.writer(out, delimiter=' ')
