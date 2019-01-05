@@ -26,6 +26,7 @@ parser.add_argument('--pfrompopflagonly', help='Define the PFROMPOPFLAGONLY para
 parser.add_argument('--burnin', help='Define the BURNIN parameter in Structure', type=int, default=20000)
 parser.add_argument('--numreps', help='Define the NUMREPS parameter in Structure', type=int, default=80000)
 parser.add_argument('--genmap', help='genetic map csv with columns "locus, lg, pos.cM"')
+parser.add_argument('--noadmix', help='use the NOADMIX model, does not work with Linkage model', default=0)
 args = parser.parse_args()
 
 if args.outfile is None:
@@ -184,7 +185,7 @@ extraparNames = [
 ]
 
 extraparValues = [
-    0,
+    args.noadmix,
     linkage,
     0,
     args.locprior,
