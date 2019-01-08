@@ -60,9 +60,10 @@ else:
 names = [row[0].replace(' ','_') for row in data[1:]]
 populations = [row[1] for row in data[1:]]
 genotypes = [row[startMarkers:] for row in data[1:]]
+markers = data[0][startMarkers:]
 
 Ngen = len(names)
-Nloc = len(genotypes[1])
+Nloc = len(markers)
 
 #==================================
 # Transform populations to numeric
@@ -96,7 +97,7 @@ for gen in genotypes:
 
 with open(outfile, 'w', newline='') as out:
     csvwriter = csv.writer(out, delimiter='\t')
-    csvwriter.writerow(data[0][startMarkers:])
+    csvwriter.writerow(markers)
     if args.genmap is not None:
         csvwriter.writerow(mapdist)
     for i in range(len(genotypes)):
