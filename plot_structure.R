@@ -6,6 +6,9 @@ plot_structure <- function(clust,
                            pop_order = NULL, ind_order = NULL,
                            angle_text = 45,
                            return.list = FALSE){
+  if(is_tibble(clust)){
+    clust <- as.data.frame(clust)
+  }
   if(!is.null(ind_order)) {
     clust <- clust[order(match(clust$ind, ind_order)),]
   }
@@ -18,7 +21,8 @@ plot_structure <- function(clust,
   }
   theme_stru <- theme(axis.ticks.x = element_blank(),
                       axis.title = element_blank(),
-                      axis.text.x = element_text(angle = angle_text, hjust = 1),
+                      axis.text.x = element_text(angle = angle_text, hjust = 1, size = 6),
+                      axis.text.y = element_text(size = 6),
                       plot.margin = unit(c(1, 1, 0, 2), "lines"),
                       legend.position = "none")
   p <- list()
