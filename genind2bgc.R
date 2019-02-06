@@ -78,7 +78,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
   # Admixed populations
   adm <- X[X@pop %in% groups[[2]], ]
   if (uniquePop) {
-    adm@pop <- factor(x = rep("pop 0", nInd(adm)))
+    adm@pop <- factor(x = rep("pop_0", nInd(adm)))
   } 
   if (int.as.admix & !uniquePop) {
     arg_list <- c(list(adm@pop), admix.grps)
