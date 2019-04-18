@@ -77,4 +77,4 @@ with open(outfilePop, 'w', newline='') as out:
 # Produce binary plink file
 #===========================
 
-subprocess.run('/Applications/plink_mac/plink --file ' + outfilePed.replace('.ped', '') + ' --out ' + outfilePed.replace('.ped', '') + ' --make-bed', shell = True)
+subprocess.run('plink --file ' + outfilePed.replace('.ped', '') + ' --out ' + outfilePed.replace('.ped', '') + ' --make-bed', shell = True)
