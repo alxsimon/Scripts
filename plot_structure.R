@@ -5,7 +5,9 @@ plot_structure <- function(clust,
                            ncut = 100, colour = NULL, 
                            pop_order = NULL, ind_order = NULL,
                            angle_text = 45,
-                           return.list = FALSE){
+                           return.list = FALSE,
+                           textsize.y = 6,
+                           textsize.x = 6){
   if(is_tibble(clust)){
     clust <- as.data.frame(clust)
   }
@@ -21,9 +23,9 @@ plot_structure <- function(clust,
   }
   theme_stru <- theme(axis.ticks.x = element_blank(),
                       axis.title = element_blank(),
-                      axis.text.x = element_text(angle = angle_text, hjust = 1, size = 6),
-                      axis.text.y = element_text(size = 6),
-                      plot.margin = unit(c(1, 1, 0, 2), "lines"),
+                      axis.text.x = element_text(angle = angle_text, hjust = 1, size = textsize.x),
+                      axis.text.y = element_text(size = textsize.y),
+                      plot.margin = margin(5, 5, 0, 5, unit = "pt"),
                       legend.position = "none")
   p <- list()
   k <- 1
