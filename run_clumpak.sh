@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
 WD=$1
+cd ${WD}
 TYPE=$2
 MCLT=$3
-cp -r /opt/CLUMPAK/{CLUMPP,mcl,distruct} .
+cp -r /opt/CLUMPAK/{CLUMPP,mcl,distruct} ${WD}/
+
+# initial cleanup
+[ -d Clumpak ] && rm -r Clumpak
 
 # Get input files location
 if [ $TYPE = 'admixture' ]; then
