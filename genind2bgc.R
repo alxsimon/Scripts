@@ -8,7 +8,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
   # to convert it to 3 bgc input files
   # requires libraries adegenet and forcats
   # - X is a genind object
-  # - 'groups' must be a list of the following structure
+  # - 'groups' must be a list of the following structure (respect order)
   # list(P1 = vector("populations Parental 1"),
   #      admix = vector("admixed populations"),
   #      P2 = vector("populations Parental 2"),
