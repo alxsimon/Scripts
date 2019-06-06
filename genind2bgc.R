@@ -7,6 +7,15 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
   # This function takes an adegenet genind object
   # to convert it to 3 bgc input files
   # requires libraries adegenet and forcats
+  # - X is a genind object
+  # - 'groups' must be a list of the following structure
+  # list(P1 = vector("populations Parental 1"),
+  #      admix = vector("admixed populations"),
+  #      P2 = vector("populations Parental 2"),
+  #      exclude = vector("individuals to exclude from the analysis"))
+  # - uniquePop: if TRUE, merge all admixed populations together.
+  # - loci_used: if TRUE, return a vector of used loci (as some of them may be dropped due to being fixed)
+
   if(class(X) != "genind"){
     stop("The data must be a genind object")
   }
@@ -16,7 +25,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
   if(class(groups) != "list"){
     stop("groups must be a list")
   }
-  
+
   # Drop monomorphic loci in this HZ
   if(all(g@loc.n.all==1)){
     loci_rm <- locNames(X)[X@loc.n.all==1]
@@ -24,12 +33,12 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
     cat("Monomorphic loci removed:\n")
     cat(loci_rm, sep = "\n")
   }
-  
+
   # Drop excluded individuals
   if (!is.null(groups$exclude)){
     X <- X[!indNames(X) %in% groups$exclude, ]
   }
-  
+
   # Parental populations
   gp <- X[X@pop %in% c(groups[[1]], groups[[3]]), ]
   gp@pop <- fct_collapse(gp@pop,
@@ -46,7 +55,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
     message("At least one locus name was beginning with a number,
   added the prefix 'loc_' to all names.")
   }
-  
+
   P1 <- data.frame(
     loci = loci,
     allele_1 = allele_count[c(TRUE,FALSE), 1],
@@ -59,7 +68,7 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
     allele_2 = allele_count[c(FALSE,TRUE), 2],
     row.names = NULL
   )
-  
+
   lines_P1 <- rep(NA,2*length(loci))
   lines_P2 <- rep(NA,2*length(loci))
   for(i in 0:(length(loci)-1)){
@@ -74,12 +83,12 @@ genind2bgc <- function(X, groups, prefix = "bgc", path = "./", uniquePop = F, lo
   fileConn <- file(paste0(path, "/", prefix,"_P2.txt"))
   writeLines(lines_P2, fileConn)
   close(fileConn)
-  
+
   # Admixed populations
   adm <- X[X@pop %in% groups[[2]], ]
   if (uniquePop) {
     adm@pop <- factor(x = rep("pop_0", nInd(adm)))
-  } 
+  }
   if (int.as.admix & !uniquePop) {
     arg_list <- c(list(adm@pop), admix.grps)
     adm@pop <- do.call(fct_collapse, arg_list)
