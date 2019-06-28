@@ -4,6 +4,7 @@ WD=$1
 cd ${WD}
 TYPE=$2
 MCLT=$3
+LN=${4:-0}
 cp -r /opt/CLUMPAK/{CLUMPP,mcl,distruct} ${WD}/
 
 # initial cleanup
@@ -18,13 +19,18 @@ else
 fi
 echo $ZIPFILE
 
+if [ $LN == 1 ]; then
+	clumpak_command='/opt/CLUMPAK/CLUMPAK_large_number.pl'
+else
+	clumpak_command='/opt/CLUMPAK/CLUMPAK.pl'
+
 # run CLUMPAK
 ID=${RANDOM}
 if [ $TYPE = 'admixture' ]; then
-	perl /opt/CLUMPAK/CLUMPAK.pl --id ${ID} --dir ${WD}/tmp --file ${ZIPFILE} \
+	perl ${clumpak_command} --id ${ID} --dir ${WD}/tmp --file ${ZIPFILE} \
 		--inputtype ${TYPE} --podtopop ${POPFILE} --mclthreshold ${MCLT}
 else
-	perl /opt/CLUMPAK/CLUMPAK.pl --id ${ID} --dir ${WD}/tmp --file ${ZIPFILE} \
+	perl ${clumpak_command} --id ${ID} --dir ${WD}/tmp --file ${ZIPFILE} \
 		--inputtype ${TYPE} --mclthreshold ${MCLT}
 fi
 
