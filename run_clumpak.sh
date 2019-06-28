@@ -23,6 +23,7 @@ if [ $LN == 1 ]; then
 	clumpak_command='/opt/CLUMPAK/CLUMPAK_large_number.pl'
 else
 	clumpak_command='/opt/CLUMPAK/CLUMPAK.pl'
+fi
 
 # run CLUMPAK
 ID=${RANDOM}
