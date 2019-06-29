@@ -466,9 +466,9 @@ sub main {
 	}
 
 	# creating summary pdf
-	&WriteToFileWithTimeStamp( $log, "Creating job summary PDF" );
-	my $pdfFileName = CreateCLUMPAKPDF($jobId, $jobDir, \@largeClustersData, \%minorClustersDataByKey);
-	&WriteToFile( $outputFiles, $pdfFileName);
+#	&WriteToFileWithTimeStamp( $log, "Creating job summary PDF" );
+#	my $pdfFileName = CreateCLUMPAKPDF($jobId, $jobDir, \@largeClustersData, \%minorClustersDataByKey);
+#	&WriteToFile( $outputFiles, $pdfFileName);
 
 	#creating zip file
 	&WriteToFileWithTimeStamp( $log, "Creating job zip file" );
