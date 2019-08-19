@@ -4,6 +4,7 @@ WD=$1
 cd ${WD}
 TYPE=$2
 MCLT=$3
+# if using more than 5000 individuals: swith LN to 1
 LN=${4:-0}
 cp -r /opt/CLUMPAK/{CLUMPP,mcl,distruct} ${WD}/
 
