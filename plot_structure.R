@@ -2,12 +2,12 @@ require(reshape2)
 require(gridExtra)
 
 plot_structure <- function(clust,
-                           ncut = 100, colour = NULL, 
-                           pop_order = NULL, ind_order = NULL,
-                           angle_text = 45,
-                           return.list = FALSE,
-                           textsize.y = 6,
-                           textsize.x = 6,
+													 ncut = 100, colour = NULL, 
+													 pop_order = NULL, ind_order = NULL,
+													 angle_text = 45,
+													 return.list = FALSE,
+													 textsize.y = 6,
+													 textsize.x = 6,
 													 hjust_label = 1,
 													 alternate_labels = F){
   if(is_tibble(clust)){
@@ -21,7 +21,7 @@ plot_structure <- function(clust,
     clust$pop <- factor(clust$pop, levels = pop_order)
   }
   if(is.null(pop_order) & is.null(ind_order)) {
-    clust <- clust[order(clust$pop),]
+    clust <- clust[order(clust$pop), ]
   }
   theme_stru <- theme(axis.ticks.x = element_blank(),
                       axis.title = element_blank(),
